@@ -1,27 +1,24 @@
-!#/bin/bash
+#!/bin/bash
 
-set -e
-
-read -p 'Enter the address to ping' HOST
-
+read -p 'Enter the address to ping: ' HOST
 count_fail=0
 
-wheil true: 
-do
+while true; do
 
-	ping_autput=$(ping -c 1 -W 1 "$HOST" 2>/dev/null)
-	if [[ $? -ne 0 ]]; when echo "Ping error"
+	ping_output=$(ping -c 1 -w 1 "$HOST" 2>/dev/null)
+	if [[ $? -ne 0 ]]; then 
+	echo "Ping error"
 	((count_fail++))
 	else
 	    time_ms=$(echo "$ping_output" | awk -F'time=' '{print $2}' | cut -d' ' -f1)
-	echo "Successful ping ${time_ms} mc"
+	echo "Successful ping ${time_ms} ms"
 	if (($(echo "$time_ms > 100" | bc -l) )); then
 	echo "Ping time exceeded 100ms"
-fi
+	fi
 	count_fail=0
-fi
+	fi
 	if (( count_fail >= 3 )); then echo "failed ping attempt 3 times"
 	count_fail=0
-fi
+	fi
 	sleep 1
 done
